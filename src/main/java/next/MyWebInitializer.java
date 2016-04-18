@@ -18,18 +18,25 @@ import next.config.WebMvcConfig;
 public class MyWebInitializer implements WebApplicationInitializer {
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
+		
+		//인코딩 작업부분 
 		CharacterEncodingFilter cef = new CharacterEncodingFilter();
 		cef.setEncoding("UTF-8");
 		cef.setForceEncoding(true);
 		servletContext.addFilter("characterEncodingFilter", cef).addMappingForUrlPatterns(null, false, "/*");
-
+		//인코딩 작업부분 
+		
 		servletContext.addFilter("httpMethodFilter", HiddenHttpMethodFilter.class)
 				.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
-
+		
+		//spring mvc설정 
 		AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
 		webContext.register(WebMvcConfig.class);
+		//mvc에 대한 설정은 WebMvcConfig가 해준다. 
 		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("next", new DispatcherServlet(webContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
+		
+		//위 설정은 앞으로 바꿀 필요가 없다 
 	}
 }

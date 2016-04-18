@@ -88,7 +88,7 @@
 							</article>
                             </c:forEach>
 							<div class="answerWrite">
-                            <form name="answer" method="post">
+                            <form name="answer" action="/api/questions/${question.questionId}/answers" method="post">
 								<input type="hidden" name="questionId" value="${question.questionId}">
 								<div class="form-group col-lg-12">
 									<textarea name="contents" id="contents" class="form-control" placeholder=""></textarea>

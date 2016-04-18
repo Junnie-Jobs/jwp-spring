@@ -28,4 +28,8 @@ public class ModelAndView {
 	public View getView() {
 		return view;
 	}
+	
+	public ModelAndView jspView(String forwardUrl) {
+		return new ModelAndView(new JstlView(forwardUrl));
+	}
 }
