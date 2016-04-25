@@ -3,7 +3,11 @@ package next.controller.qna;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
 import next.CannotOperateException;
+import next.controller.UserSessionUtils;
 import next.dao.AnswerDao;
 import next.dao.QuestionDao;
 import next.model.Answer;
@@ -14,24 +18,26 @@ import next.service.QnaService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.common.collect.Maps;
-
-import core.jdbc.DataAccessException;
 import core.web.argumentresolver.LoginUser;
 
 @RestController
 @RequestMapping("/api/questions")
 public class ApiQuestionController {
 	private Logger log = LoggerFactory.getLogger(ApiQuestionController.class);
-	
-	private QuestionDao questionDao = QuestionDao.getInstance();
-	private AnswerDao answerDao = AnswerDao.getInstance();
-	private QnaService qnaService = new QnaService(questionDao, answerDao);
+	@Resource
+	private QuestionDao questionDao;
+	@Resource
+	private AnswerDao answerDao;
+	@Resource
+	private QnaService qnaService;
 	
 	@RequestMapping(value="/{questionId}", method=RequestMethod.DELETE)
 	public Result deleteQuestion(@LoginUser User loginUser, @PathVariable long questionId) throws Exception {
@@ -75,4 +81,22 @@ public class ApiQuestionController {
 			return Result.fail(e.getMessage());
 		}
 	}
+	
+//	@RequestMapping(value = "/{questionId}/answers", method = RequestMethod.POST)
+//	public @ResponseBody Answer addAnswer(HttpSession session, @PathVariable long questionId,
+//			@RequestParam String contents) throws Exception {
+//
+//		if (!UserSessionUtils.isLogined(session)) {
+//			throw new IllegalStateException("로그인이 필요합니다.");
+//		}
+//
+//		User user = UserSessionUtils.getUserFromSession(session);
+//		Answer answer = new Answer(user.getUserId(), contents, questionId);
+//		log.debug("answer : {}", answer);
+//		Answer savedAnswer = answerDao.insert(answer);
+//		questionDao.updateCountOfAnswer(savedAnswer.getQuestionId());
+//		return savedAnswer;
+//
+//	}
+
 }
