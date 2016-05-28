@@ -1,11 +1,23 @@
 package next.model;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
 public class User {
 	public static final GuestUser GUEST_USER = new GuestUser();
 	
+	@NotBlank
+	@Size(min = 4, max = 12)
 	private String userId;
+	@NotBlank
+	@Size(min = 4, max = 12)
 	private String password;
+	@NotBlank
+	@Size(min = 2, max = 20)
 	private String name;
+	@Email(message="this is invalid email") // spring form tag error로 사용할 수 있다.
 	private String email;
 
 	public User() {

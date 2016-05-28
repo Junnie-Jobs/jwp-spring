@@ -17,6 +17,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 
+import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
+
 public class MyWebInitializer implements WebApplicationInitializer {
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
@@ -27,8 +29,11 @@ public class MyWebInitializer implements WebApplicationInitializer {
 		CharacterEncodingFilter cef = new CharacterEncodingFilter();
 		cef.setEncoding("UTF-8");
 		cef.setForceEncoding(true);
+		XssEscapeServletFilter xesf = new XssEscapeServletFilter();
+		servletContext.addFilter("xssPreventerDefender", xesf).addMappingForUrlPatterns(null, false, "/*");
+		servletContext.addFilter("xssSaxFilterDefender", xesf).addMappingForUrlPatterns(null, false, "/*");
+		servletContext.addFilter("xssFilterDefender", xesf).addMappingForUrlPatterns(null, false, "/*");
 		servletContext.addFilter("characterEncodingFilter", cef).addMappingForUrlPatterns(null, false, "/*");
-
 		servletContext.addFilter("httpMethodFilter", HiddenHttpMethodFilter.class)
 				.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
 
@@ -38,5 +43,8 @@ public class MyWebInitializer implements WebApplicationInitializer {
 		ServletRegistration.Dynamic dispatcher = servletContext.addServlet("next", new DispatcherServlet(webContext));
 		dispatcher.setLoadOnStartup(1);
 		dispatcher.addMapping("/");
+		
+		
+		//webInitializer에서 web.xml에서 하는 부분을 사용해준다.
 	}
 }
